@@ -9,7 +9,6 @@ Spor kulüplerinde üyelerin koşu performanslarının takibi, adil bir puanlama
 * Dünya rekoru hızlarından daha düşük pace (dk/km) değerlerinin sisteme girilmesini engellemek için Stored Procedure tabanlı hile koruma mantığı araştırılıp entegre edilmiştir.
 
 ## 🔄 Akış Şeması
-*(Enes buraya draw.io ile çizeceği uygulamanın çalışma mantığını gösteren bir resim ekleyecek)*
 ![Akış Şeması](akis_semasi.png)
 
 ## 🏗️ Yazılım Mimarisi
@@ -19,12 +18,10 @@ Proje, veri tabanı merkezli bir mimariyle geliştirilmiştir:
 * **Bağlantı Katmanı:** `mysql-connector-python` ve ortam güvenliği için `python-dotenv`.
 
 ## 🗄️ Veri Tabanı Diyagramı (ER)
-*(Enes buraya veritabanındaki 5 tablonun bağlantısını gösteren ER diyagramı resmini ekleyecek)*
 ![ER Diyagramı](er_diyagrami.png)
 
 ## 🖥️ Genel Yapı ve Arayüz Görselleri
 Sistem ayağa kaldırıldığında kullanıcıları şık bir Liderlik Tablosu ve interaktif Rota İstatistikleri ekranı karşılar. Kullanıcıların lig durumları, toplam puanları ve koşulan mesafeler anlık olarak veritabanından çekilerek hesaplanır.
-*(Enes buraya uygulamanızın çalışan halinin 1-2 ekran görüntüsünü ekleyecek)*
 
 ## 📚 Referanslar
 1. Kocaeli Üniversitesi TBL331 Ders Notları
