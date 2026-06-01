@@ -1,0 +1,14 @@
+# Çevresel değişkenler ve şifreler
+.env
+
+# Python sanal ortam klasörleri (ÇOK ÖNEMLİ)
+.venv/
+venv/
+env/
+
+# Python önbellek dosyaları
+__pycache__/
+*.pyc
+
+# Mac sistem dosyaları
+.DS_Store
