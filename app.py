@@ -46,7 +46,7 @@ def login(eposta, sifre):
         st.session_state.kullanici_id = user['Uye_ID']
         st.session_state.kullanici_adi = f"{user['Ad']} {user['Soyad']}"
         st.session_state.rol = user['Rol']
-        st.rerun() # Sayfayı yenileyerek sistemi aç
+        st.rerun()
     else:
         st.error("E-posta veya şifre hatalı!")
 
@@ -58,14 +58,16 @@ def logout():
     st.session_state.rol = ""
     st.rerun()
 
+
+# ==========================================
 # --- ARAYÜZ (FRONTEND) GÖRÜNÜMÜ ---
+# ==========================================
 
 if not st.session_state.giris_yapildi:
-    # 1. GİRİŞ YAPILMAMIŞSA (LOGIN EKRANI)
+    # --- LOGIN EKRANI ---
     st.title("🏃‍♂️ Koşu Kulübü Sistemine Giriş")
     st.write("Lütfen devam etmek için üye bilgilerinizi girin.")
     
-    # Form ile giriş alma
     with st.form("login_form"):
         eposta = st.text_input("E-posta Adresi")
         sifre = st.text_input("Şifre", type="password")
@@ -75,35 +77,112 @@ if not st.session_state.giris_yapildi:
             login(eposta, sifre)
 
 else:
-    # 2. GİRİŞ YAPILMIŞSA (ANA SİSTEM)
+    # --- ANA SİSTEM (Giriş Yapıldıktan Sonra) ---
     st.sidebar.title(f"Hoş geldin, {st.session_state.kullanici_adi} 👋")
     st.sidebar.success(f"Yetki Seviyesi: **{st.session_state.rol}**")
     
-    # Kullanıcının yetkisine göre menü seçenekleri
+    # Rol Bazlı Menü
     if st.session_state.rol == "Admin":
-        menu = ["🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle", "📈 Genel Analiz"]
+        menu = ["🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle (Admin)", "👤 Kendi Profilim"]
     else:
         menu = ["🏆 Liderlik Tablosu", "👤 Kendi Profilim"]
         
     secim = st.sidebar.radio("Sayfalar", menu)
-    
     st.sidebar.markdown("---")
     if st.sidebar.button("Çıkış Yap 🚪"):
         logout()
 
-    # Sayfa Yönlendirmeleri
+    # --- 1. LİDERLİK TABLOSU (VIEW Kullanımı) ---
     if secim == "🏆 Liderlik Tablosu":
         st.header("🏆 Güncel Liderlik Tablosu")
-        st.info("Buraya veritabanından çektiğimiz sıralama tablosu eklenecek.")
+        st.write("Bu tablo veritabanındaki `VW_CanliLigSiralama` view'ından anlık olarak çekilmektedir.")
         
-    elif secim == "➕ Yeni Koşu Ekle":
-        st.header("➕ Sisteme Yeni Koşu Verisi Gir")
-        st.info("Buraya veritabanına INSERT yapacak Admin formu gelecek.")
+        try:
+            query = "SELECT * FROM VW_CanliLigSiralama"
+            df = pd.read_sql(query, conn)
+            # Veriyi Streamlit'in interaktif tablosunda göster (büyüklük, arama vs. otomatik)
+            st.dataframe(df, use_container_width=True, hide_index=True)
+        except Exception as e:
+            st.error(f"Tablo çekilirken hata oluştu: {e}")
+
+    # --- 2. YENİ KOŞU EKLE (Stored Procedure ve Trigger Kullanımı) ---
+    elif secim == "➕ Yeni Koşu Ekle (Admin)":
+        st.header("➕ Sisteme Yeni Koşu Verisi Gir (Hile Korumalı)")
+        st.write("Bu sayfada eklenen koşular `SP_YeniKosuEkle` prosedüründen geçer. Eğer veri mantıklıysa kaydedilir ve `TRG_PuanHesapla_Ve_LigGuncelle` trigger'ı puanı otomatik hesaplayıp ligi günceller.")
         
-    elif secim == "📈 Genel Analiz":
-        st.header("📈 Kulüp Genel Analizi")
-        st.info("Buraya kulübün grafiksel (pasta/çizgi) istatistikleri gelecek.")
-        
+        try:
+            cursor = conn.cursor(dictionary=True)
+            # Rotaları getir
+            cursor.execute("SELECT Rota_ID, RotaAdi, ZorlukKatsayisi FROM Rotalar") 
+            rotalar = cursor.fetchall()
+            rota_sozlugu = {f"{r['RotaAdi']} (Zorluk: {r['ZorlukKatsayisi']})": r['Rota_ID'] for r in rotalar}
+            
+            # Üyeleri getir (Kimin adına koşu eklenecekse onu seçmek için)
+            cursor.execute("SELECT Uye_ID, Ad, Soyad FROM Uyeler")
+            uyeler = cursor.fetchall()
+            uye_sozlugu = {f"{u['Ad']} {u['Soyad']} (ID: {u['Uye_ID']})": u['Uye_ID'] for u in uyeler}
+            cursor.close()
+
+            with st.form("kosu_ekle_form"):
+                secilen_uye = st.selectbox("Koşuyu Yapan Üye", list(uye_sozlugu.keys()))
+                secilen_rota = st.selectbox("Koşulan Rota", list(rota_sozlugu.keys()))
+                
+                col1, col2 = st.columns(2)
+                mesafe_km = col1.number_input("Mesafe (KM)", min_value=0.1, step=0.1, format="%.1f")
+                sure_dk = col2.number_input("Koşu Süresi (Dakika)", min_value=1, step=1)
+                
+                kaydet_btn = st.form_submit_button("Koşuyu Kaydet (Procedure Çalıştır)")
+                
+                if kaydet_btn:
+                    uye_id = uye_sozlugu[secilen_uye]
+                    rota_id = rota_sozlugu[secilen_rota]
+                    
+                    try:
+                        cursor = conn.cursor()
+                        # Normal INSERT yerine Stored Procedure'ü çağırıyoruz (Hile Koruması için)
+                        cursor.callproc('SP_YeniKosuEkle', (uye_id, rota_id, mesafe_km, sure_dk))
+                        conn.commit()
+                        cursor.close()
+                        st.success("🎉 Koşu başarıyla eklendi! Trigger çalıştı, puanlar hesaplandı ve liderlik tablosu güncellendi.")
+                    except mysql.connector.Error as err:
+                        # Eğer Pace < 2.0 ise Stored Procedure hata fırlatacak, onu burada yakalayıp ekrana basıyoruz
+                        st.error(f"Kayıt Reddedildi: {err.msg}")
+                        
+        except Exception as e:
+            st.error(f"Sistem Hatası: {e}")
+
+    # --- 3. KENDİ PROFİLİM (Bireysel Geçmiş) ---
     elif secim == "👤 Kendi Profilim":
-        st.header("👤 Profilim ve Koşu Geçmişim")
-        st.info(f"Burada sadece {st.session_state.kullanici_adi} adlı kullanıcının geçmişi listelenecek.")
+        st.header(f"👤 {st.session_state.kullanici_adi} - Profil ve Koşu Geçmişi")
+        
+        try:
+            # Üyenin lig durumunu çek
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT L.LigAdi, USL.ToplamPuan 
+                FROM Uye_Sezon_Lig USL 
+                JOIN Ligler L ON USL.Lig_ID = L.Lig_ID 
+                WHERE USL.Uye_ID = %s AND USL.Sezon_Yili = %s
+            """, (st.session_state.kullanici_id, 2026)) # Örnek sezon yılı 2026
+            lig_durumu = cursor.fetchone()
+            cursor.close()
+            
+            if lig_durumu:
+                col1, col2 = st.columns(2)
+                col1.metric("Şu Anki Liginiz", lig_durumu['LigAdi'])
+                col2.metric("Toplam Puanınız", lig_durumu['ToplamPuan'])
+            
+            st.subheader("Geçmiş Koşularım")
+            # Kişinin kendi koşularını listele
+            query = f"""
+                SELECT R.RotaAdi, K.KosuTarihi, K.Mesafe_KM, K.Sure_Dakika, K.KazanilanPuan 
+                FROM Kosular K 
+                JOIN Rotalar R ON K.Rota_ID = R.Rota_ID 
+                WHERE K.Uye_ID = {st.session_state.kullanici_id}
+                ORDER BY K.KosuTarihi DESC
+            """
+            df_gecmis = pd.read_sql(query, conn)
+            st.dataframe(df_gecmis, use_container_width=True, hide_index=True)
+            
+        except Exception as e:
+            st.error(f"Profil bilgileri yüklenemedi: {e}")
