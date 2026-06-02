@@ -64,17 +64,74 @@ def logout():
 # ==========================================
 
 if not st.session_state.giris_yapildi:
-    # --- LOGIN EKRANI ---
     st.title("🏃‍♂️ Koşu Kulübü Sistemine Giriş")
-    st.write("Lütfen devam etmek için üye bilgilerinizi girin.")
+    st.write("Sisteme giriş yapabilir veya yeni bir hesap oluşturabilirsiniz.")
     
-    with st.form("login_form"):
-        eposta = st.text_input("E-posta Adresi")
-        sifre = st.text_input("Şifre", type="password")
-        submit_button = st.form_submit_button("Sisteme Giriş Yap")
-        
-        if submit_button:
-            login(eposta, sifre)
+    # Giriş ve Kayıt ekranlarını sekmelere ayırıyoruz
+    tab1, tab2 = st.tabs(["🔑 Giriş Yap", "📝 Yeni Kayıt Oluştur"])
+    
+    # --- 1. GİRİŞ YAP SEKME ---
+    with tab1:
+        with st.form("login_form"):
+            eposta = st.text_input("E-posta Adresi")
+            sifre = st.text_input("Şifre", type="password")
+            submit_button = st.form_submit_button("Sisteme Giriş Yap")
+            
+            if submit_button:
+                login(eposta, sifre)
+                
+    # --- 2. KAYIT OL SEKME ---
+    with tab2:
+        st.subheader("Yeni Üye Kaydı")
+        with st.form("kayit_form"):
+            yeni_ad = st.text_input("Ad")
+            yeni_soyad = st.text_input("Soyad")
+            yeni_eposta = st.text_input("E-posta Adresi")
+            yeni_cinsiyet = st.selectbox("Cinsiyet", ["Erkek (E)", "Kadın (K)"])
+            yeni_sifre = st.text_input("Şifre", type="password")
+            yeni_sifre_tekrar = st.text_input("Şifre (Tekrar)", type="password")
+            
+            kayit_btn = st.form_submit_button("Kayıt Ol")
+            
+            if kayit_btn:
+                if yeni_sifre != yeni_sifre_tekrar:
+                    st.error("Şifreler eşleşmiyor! Lütfen kontrol edin.")
+                elif not yeni_ad or not yeni_soyad or not yeni_eposta or not yeni_sifre:
+                    st.error("Lütfen tüm alanları doldurun.")
+                else:
+                    # Cinsiyet verisini veritabanındaki (E/K) formatına çevir
+                    cinsiyet_kodu = "E" if "Erkek" in yeni_cinsiyet else "K"
+                    
+                    try:
+                        cursor = conn.cursor()
+                        # 1. Üyeyi veritabanına ekle (Rol varsayılan olarak 'Uye' atanacak)
+                        insert_uye_query = """
+                        INSERT INTO Uyeler (Ad, Soyad, Eposta, Cinsiyet, Sifre) 
+                        VALUES (%s, %s, %s, %s, %s)
+                        """
+                        cursor.execute(insert_uye_query, (yeni_ad, yeni_soyad, yeni_eposta, cinsiyet_kodu, yeni_sifre))
+                        
+                        # Eklenen yeni üyenin ID'sini otomatik al
+                        yeni_uye_id = cursor.lastrowid
+                        
+                        # 2. Üyeyi Çaylak ligiyle (Lig_ID: 1) mevcut sezona dahil et
+                        import datetime
+                        mevcut_yil = datetime.datetime.now().year
+                        insert_lig_query = """
+                        INSERT INTO Uye_Sezon_Lig (Uye_ID, Lig_ID, Sezon_Yili, ToplamPuan) 
+                        VALUES (%s, %s, %s, %s)
+                        """
+                        cursor.execute(insert_lig_query, (yeni_uye_id, 1, mevcut_yil, 0))
+                        
+                        conn.commit()
+                        cursor.close()
+                        
+                        st.success("🎉 Kayıt başarıyla oluşturuldu! Şimdi 'Giriş Yap' sekmesinden sisteme girebilirsiniz.")
+                        
+                    except mysql.connector.IntegrityError:
+                        st.error("Bu e-posta adresi zaten kullanımda! Lütfen başka bir e-posta deneyin.")
+                    except Exception as e:
+                        st.error(f"Kayıt işlemi sırasında bir hata oluştu: {e}")
 
 else:
     # --- ANA SİSTEM (Giriş Yapıldıktan Sonra) ---
