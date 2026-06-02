@@ -4,26 +4,13 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 
-# 1. Adımda oluşturduğumuz .env dosyasındaki şifreleri gizlice içeri alıyoruz
+# Ortam değişkenlerini yükle
 load_dotenv()
 
-# --- SİTE AYARLARI ---
-st.set_page_config(page_title="Koşu Kulübü Ligi", page_icon="🏃", layout="wide")
+# Sayfa Ayarları
+st.set_page_config(page_title="Koşu Kulübü Ligi", page_icon="🏃‍♂️", layout="wide")
 
-# Siteye biraz renk ve tasarım katıyoruz
-st.markdown("""
-    <style>
-    .stMetric {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# --- VERİTABANINA BAĞLANMA KISMI ---
-# Site her yenilendiğinde çökmek yerine bağlantıyı hafızada tutsun diye @st.cache_resource kullanıyoruz
+# Veritabanı Bağlantısı
 @st.cache_resource
 def init_connection():
     try:
@@ -32,79 +19,91 @@ def init_connection():
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASS"),
             database=os.getenv("DB_NAME"),
-            port=os.getenv("DB_PORT", 3306) # Mac MAMP kapısı için eklendi
+            port=os.getenv("DB_PORT", 3306)
         )
     except Exception as e:
         st.error(f"Veritabanı Bağlantı Hatası: {e}")
         return None
 
-# Bağlantıyı çalıştır
 conn = init_connection()
 
-# Eğer veritabanı (MAMP/XAMPP) kapalıysa siteyi durdur ve uyarı ver
-if conn is None:
-    st.warning("Lütfen yerel MySQL sunucunuzun açık olduğundan emin olun.")
-    st.stop()
+# Oturum (Session) Hafızası Ayarları
+if "giris_yapildi" not in st.session_state:
+    st.session_state.giris_yapildi = False
+    st.session_state.kullanici_id = None
+    st.session_state.kullanici_adi = ""
+    st.session_state.rol = ""
 
-# Verileri çekmek için bir okuyucu (cursor) oluştur
-cursor = conn.cursor(dictionary=True)
-
-# --- SOL TARAFTAKİ MENÜ ---
-st.sidebar.title("🏃 Koşu Kulübü")
-menu = st.sidebar.radio("Menü Seçin", ["🏆 Liderlik Tablosu", "🗺️ Rota İstatistikleri"])
-st.sidebar.markdown("---")
-st.sidebar.caption("Veritabanı Yönetim Sistemleri Projesi")
-
-# --- SAYFA 1: LİDERLİK TABLOSU ---
-if menu == "🏆 Liderlik Tablosu":
-    st.header("Güncel Lig Sıralaması")
-
-    # SQL'deki görünümü (View) çalıştırıp verileri alıyoruz
-    cursor.execute("SELECT * FROM VW_CanliLigSiralama")
-    lig_verisi = cursor.fetchall()
-
-    # Eğer içeride veri varsa tabloyu çiz
-    if lig_verisi:
-        df_lig = pd.DataFrame(lig_verisi)
-        
-        # En üstte yan yana 3 tane istatistik kutusu oluşturuyoruz
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Toplam Üye", len(df_lig))
-        col2.metric("En Yüksek Puan", df_lig['ToplamPuan'].max())
-        col3.metric("Toplam Mesafe", f"{df_lig['ToplamKosulan_KM'].sum()} KM")
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        # Sütun isimlerini Türkçeleştirip daha güzel gösteriyoruz
-        df_lig.rename(columns={
-            'Ad': 'İsim', 'Soyad': 'Soyisim', 'LigAdi': 'Lig', 
-            'ToplamPuan': 'Puan', 'ToplamKosulan_KM': 'Koşulan Mesafe (KM)'
-        }, inplace=True)
-        
-        # Tabloyu ekrana basıyoruz
-        st.dataframe(df_lig[['İsim', 'Soyisim', 'Lig', 'Puan', 'Koşulan Mesafe (KM)']], use_container_width=True, hide_index=True)
+# Giriş Yapma Fonksiyonu
+def login(eposta, sifre):
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT Uye_ID, Ad, Soyad, Rol FROM Uyeler WHERE Eposta = %s AND Sifre = %s", (eposta, sifre))
+    user = cursor.fetchone()
+    cursor.close()
+    
+    if user:
+        st.session_state.giris_yapildi = True
+        st.session_state.kullanici_id = user['Uye_ID']
+        st.session_state.kullanici_adi = f"{user['Ad']} {user['Soyad']}"
+        st.session_state.rol = user['Rol']
+        st.rerun() # Sayfayı yenileyerek sistemi aç
     else:
-        st.info("Kayıtlı koşu verisi bulunamadı.")
+        st.error("E-posta veya şifre hatalı!")
 
-# --- SAYFA 2: ROTA İSTATİSTİKLERİ ---
-elif menu == "🗺️ Rota İstatistikleri":
-    st.header("Rota Tercihleri ve Zorluklar")
+# Çıkış Yapma Fonksiyonu
+def logout():
+    st.session_state.giris_yapildi = False
+    st.session_state.kullanici_id = None
+    st.session_state.kullanici_adi = ""
+    st.session_state.rol = ""
+    st.rerun()
 
-    # İkinci SQL görünümünü (View) çalıştırıp alıyoruz
-    cursor.execute("SELECT * FROM VW_RotaTercihleri")
-    rota_verisi = cursor.fetchall()
+# --- ARAYÜZ (FRONTEND) GÖRÜNÜMÜ ---
 
-    if rota_verisi:
-        df_rota = pd.DataFrame(rota_verisi)
+if not st.session_state.giris_yapildi:
+    # 1. GİRİŞ YAPILMAMIŞSA (LOGIN EKRANI)
+    st.title("🏃‍♂️ Koşu Kulübü Sistemine Giriş")
+    st.write("Lütfen devam etmek için üye bilgilerinizi girin.")
+    
+    # Form ile giriş alma
+    with st.form("login_form"):
+        eposta = st.text_input("E-posta Adresi")
+        sifre = st.text_input("Şifre", type="password")
+        submit_button = st.form_submit_button("Sisteme Giriş Yap")
         
-        # Ekranı ikiye bölüyoruz (Grafik daha geniş yer kaplasın diye [2, 1] oranında)
-        col1, col2 = st.columns([2, 1])
+        if submit_button:
+            login(eposta, sifre)
+
+else:
+    # 2. GİRİŞ YAPILMIŞSA (ANA SİSTEM)
+    st.sidebar.title(f"Hoş geldin, {st.session_state.kullanici_adi} 👋")
+    st.sidebar.success(f"Yetki Seviyesi: **{st.session_state.rol}**")
+    
+    # Kullanıcının yetkisine göre menü seçenekleri
+    if st.session_state.rol == "Admin":
+        menu = ["🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle", "📈 Genel Analiz"]
+    else:
+        menu = ["🏆 Liderlik Tablosu", "👤 Kendi Profilim"]
         
-        with col1:
-            # Rota isimlerine göre bir çubuk grafiği çiziyoruz
-            st.bar_chart(data=df_rota, x='RotaAdi', y='ToplamKosuSayisi')
-            
-        with col2:
-            # Tablonun sütun isimlerini düzeltip ekrana basıyoruz
-            df_rota.rename(columns={'RotaAdi': 'Rota', 'ZorlukKatsayisi': 'Zorluk', 'OrtalamaSure_Dk': 'Ort. Süre (Dk)'}, inplace=True)
-            st.dataframe(df_rota[['Rota', 'Zorluk', 'Ort. Süre (Dk)']], use_container_width=True, hide_index=True)
+    secim = st.sidebar.radio("Sayfalar", menu)
+    
+    st.sidebar.markdown("---")
+    if st.sidebar.button("Çıkış Yap 🚪"):
+        logout()
+
+    # Sayfa Yönlendirmeleri
+    if secim == "🏆 Liderlik Tablosu":
+        st.header("🏆 Güncel Liderlik Tablosu")
+        st.info("Buraya veritabanından çektiğimiz sıralama tablosu eklenecek.")
+        
+    elif secim == "➕ Yeni Koşu Ekle":
+        st.header("➕ Sisteme Yeni Koşu Verisi Gir")
+        st.info("Buraya veritabanına INSERT yapacak Admin formu gelecek.")
+        
+    elif secim == "📈 Genel Analiz":
+        st.header("📈 Kulüp Genel Analizi")
+        st.info("Buraya kulübün grafiksel (pasta/çizgi) istatistikleri gelecek.")
+        
+    elif secim == "👤 Kendi Profilim":
+        st.header("👤 Profilim ve Koşu Geçmişim")
+        st.info(f"Burada sadece {st.session_state.kullanici_adi} adlı kullanıcının geçmişi listelenecek.")
