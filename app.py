@@ -19,7 +19,8 @@ def init_connection():
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASS"),
             database=os.getenv("DB_NAME"),
-            port=os.getenv("DB_PORT", 3306)
+            port=os.getenv("DB_PORT", 3306),
+            autocommit=True  # Listeyi anında güncelleyen ayar
         )
     except Exception as e:
         st.error(f"Veritabanı Bağlantı Hatası: {e}")
