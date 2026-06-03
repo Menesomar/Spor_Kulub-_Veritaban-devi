@@ -11,7 +11,7 @@ load_dotenv()
 # Sayfa Ayarları
 st.set_page_config(page_title="Koşu Kulübü Ligi", page_icon="🏃‍♂️", layout="wide")
 
-# Veritabanı Bağlantısı (autocommit eklendi)
+# Veritabanı Bağlantısı
 @st.cache_resource
 def init_connection():
     try:
@@ -115,18 +115,64 @@ else:
     st.sidebar.title(f"Hoş geldin, {st.session_state.kullanici_adi} 👋")
     st.sidebar.success(f"Yetki Seviyesi: **{st.session_state.rol}**")
     
+    # YENİ MENÜ DÜZENİ
     if st.session_state.rol == "Admin":
-        menu = ["🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle (Admin)", "⚖️ Ceza & Lig Düşürme", "👥 Tüm Üyeler", "👤 Kendi Profilim"]
+        menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle (Admin)", "⚖️ Ceza & Lig Düşürme", "✍️ Duyuru Yayınla", "👥 Tüm Üyeler", "👤 Kendi Profilim"]
     else:
-        menu = ["🏆 Liderlik Tablosu", "👤 Kendi Profilim"]
+        menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "👤 Kendi Profilim"]
         
     secim = st.sidebar.radio("Sayfalar", menu)
     st.sidebar.markdown("---")
     if st.sidebar.button("Çıkış Yap 🚪"):
         logout()
 
+    # --- YENİ EKLENEN: DUYURULAR PANOSU ---
+    if secim == "📢 Duyurular":
+        st.header("📢 Kulüp Panosu")
+        st.write("Kulübümüzle ilgili en güncel haberler ve bildirimler:")
+        try:
+            query = """
+                SELECT D.Baslik, D.Icerik, D.Tarih, U.Ad, U.Soyad 
+                FROM Duyurular D 
+                LEFT JOIN Uyeler U ON D.Yazar_ID = U.Uye_ID 
+                ORDER BY D.Tarih DESC
+            """
+            df_duyuru = pd.read_sql(query, conn)
+            
+            if not df_duyuru.empty:
+                for index, row in df_duyuru.iterrows():
+                    # Streamlit'te şık duyuru kartları oluştur
+                    with st.expander(f"📌 {row['Baslik']} - ({row['Tarih'].strftime('%d-%m-%Y %H:%M')})", expanded=True):
+                        st.write(row['Icerik'])
+                        st.caption(f"Yayınlayan: {row['Ad']} {row['Soyad']}")
+            else:
+                st.info("Henüz panoda bir duyuru bulunmuyor.")
+        except Exception as e:
+            st.error(f"Duyurular yüklenirken hata oluştu: {e}")
+
+    # --- YENİ EKLENEN: DUYURU YAYINLA (Sadece Admin) ---
+    elif secim == "✍️ Duyuru Yayınla":
+        st.header("✍️ Yeni Duyuru Yayınla")
+        st.write("Buradan yayınlayacağınız duyurular tüm üyelerin ana sayfasında görünecektir.")
+        with st.form("duyuru_form"):
+            baslik = st.text_input("Duyuru Başlığı")
+            icerik = st.text_area("Duyuru İçeriği")
+            
+            if st.form_submit_button("Panoda Yayınla 📣"):
+                if baslik and icerik:
+                    try:
+                        cursor = conn.cursor()
+                        cursor.execute("INSERT INTO Duyurular (Baslik, Icerik, Yazar_ID) VALUES (%s, %s, %s)", (baslik, icerik, st.session_state.kullanici_id))
+                        conn.commit()
+                        cursor.close()
+                        st.success("Duyuru başarıyla yayınlandı! '📢 Duyurular' sekmesinden kontrol edebilirsiniz.")
+                    except Exception as e:
+                        st.error(f"Kayıt Hatası: {e}")
+                else:
+                    st.error("Lütfen başlık ve içerik alanlarını boş bırakmayın.")
+
     # --- 1. LİDERLİK TABLOSU ---
-    if secim == "🏆 Liderlik Tablosu":
+    elif secim == "🏆 Liderlik Tablosu":
         st.header("🏆 Liglere Göre Liderlik Tablosu")
         try:
             query = "SELECT * FROM VW_CanliLigSiralama"
@@ -158,7 +204,6 @@ else:
             uye_sozlugu = {f"{u['Ad']} {u['Soyad']} (ID: {u['Uye_ID']})": u['Uye_ID'] for u in uyeler}
             cursor.close()
 
-            # FORM BURADA TEK SEFER TANIMLANDI
             with st.form("kosu_ekle_form"):
                 secilen_uye = st.selectbox("Koşuyu Yapan Üye", list(uye_sozlugu.keys()))
                 secilen_rota = st.selectbox("Koşulan Rota", list(rota_sozlugu.keys()))
