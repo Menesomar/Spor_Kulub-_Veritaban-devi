@@ -1,3 +1,4 @@
+<img width="1704" height="830" alt="Ekran görüntüsü 2026-06-03 124036" src="https://github.com/user-attachments/assets/8c02362c-898e-47e9-8b07-766bc9a24164" />
 # 🏃‍♂️ Koşu Kulübü: Liderlik ve Takip Sistemi (KosuKulubuDB)
 
 **Kocaeli Üniversitesi - Bilişim Sistemleri Mühendisliği Bölümü**
