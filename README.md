@@ -97,9 +97,10 @@ streamlit run app.py
 
 ## 📸 8. Uygulama Arayüz Görselleri (UI Showcase)
 *Run 2 League platformunun yüksek kontrastlı, atletik performans odaklı kullanıcı arayüzü görselleri:*
+<img width="1912" height="987" alt="Ekran görüntüsü 2026-06-04 023600" src="https://github.com/user-attachments/assets/92917c44-76b0-4904-ada0-abbdbd91af11" />
+<img width="1917" height="937" alt="Ekran görüntüsü 2026-06-04 023643" src="https://github.com/user-attachments/assets/6d5c819d-1807-4582-b52c-16915677d9fc" />
 
-![Uygulama Giriş Ekranı](arayuz_giris.png)
-![Canlı Liderlik Tablosu](arayuz_liderlik.png)
+
 
 ## 📚 9. Referanslar
 1. Kocaeli Üniversitesi TBL331 Ders Notları
