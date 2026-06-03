@@ -1,4 +1,3 @@
-
 # 🏃‍♂️ Koşu Kulübü: Liderlik ve Takip Sistemi (KosuKulubuDB)
 
 **Kocaeli Üniversitesi - Bilişim Sistemleri Mühendisliği Bölümü**
@@ -40,7 +39,7 @@ graph TD
 
 ## 🏗️ 4. Yazılım Mimarisi
 Proje, İstemci-Sunucu (Client-Server) mimarisine benzer bir yapıda, "Veri Katmanı" ve "Sunum Katmanı" olarak iki ana bileşenden oluşmaktadır:
-* **Sunum Katmanı (Frontend):** Python ve Streamlit kullanılarak geliştirilmiştir. Özel CSS enjekte edilerek modern ve aydınlık bir arayüz (UI) tasarlanmıştır.
+* **Sunum Katmanı (Frontend):** Python ve Streamlit kullanılarak geliştirilmiştir. Özel CSS enjekte edilerek modern, dinamik ve aydınlık bir arayüz (UI) tasarlanmıştır.
 * **Veri Katmanı (Backend & Database):** MySQL kullanılmıştır. İş mantığının (Business Logic) büyük bir kısmı arayüzde değil, doğrudan veritabanı katmanında (Trigger, View ve Stored Procedure'ler aracılığıyla) işlenerek sistem performansı artırılmıştır.
 * **Bağlantı:** `mysql-connector-python` kütüphanesi ile arayüz ve veritabanı arası iletişim sağlanmıştır.
 
@@ -50,9 +49,10 @@ Veritabanımız, 5N (Normalizasyon) kurallarına uygun olarak tasarlanmış olup
 <img width="1919" height="905" alt="Ekran görüntüsü 2026-06-04 022409" src="https://github.com/user-attachments/assets/b0c6f762-49e5-4056-bb8f-2c937e87bf56" />
 
 ## 🏢 6. Veritabanı Nesneleri ve İş Mantığı Görevleri
-Hocanın proje isterlerinde belirttiği "birden fazla kez ve amaca uygun kullanım" kuralına bağlı olarak veritabanı seviyesinde geliştirilen mimari nesneler aşağıda listelenmiştir:
+Proje isterlerinde belirtilen "birden fazla kez ve amaca uygun kullanım" kuralına bağlı olarak veritabanı seviyesinde geliştirilen mimari nesneler aşağıda listelenmiştir:
 
-* **Stored Procedures (Yordamlar):** * `SP_YeniKosuEkle`: Kullanıcının girdiği mesafe ve süre üzerinden anlık Pace kontrolü yapar, imkansız hızlardaki hileli girişleri (`SIGNAL SQLSTATE '45000'`) engelleyerek kararlı veri girişi sağlar.
+* **Stored Procedures (Yordamlar):**
+  * `SP_YeniKosuEkle`: Kullanıcının girdiği mesafe ve süre üzerinden anlık Pace kontrolü yapar, imkansız hızlardaki hileli girişleri (`SIGNAL SQLSTATE '45000'`) engelleyerek kararlı veri girişi sağlar.
   * `SP_CezaPuaniVer`: Admin panelinden tetiklenen disiplin cezalarında üyenin puanını düşürür ve baremlere göre otomatik küme düşürme işlemini yönetir.
 * **Triggers (Tetikleyiciler):**
   * `TRG_PuanHesapla_Ve_LigGuncelle`: `Kosular` tablosuna yeni veri girilmeden önce (`BEFORE INSERT`) rotanın zorluk katsayısını çekerek puanı hesaplar, üyenin toplam puanına ekler ve anlık olarak lig atlamasını sağlar.
@@ -93,9 +93,15 @@ pip install streamlit mysql-connector-python pandas python-dotenv
 
 # 5. Uygulamayı Streamlit sunucusu üzerinden ayağa kaldırın
 streamlit run app.py
+```
 
+## 📸 8. Uygulama Arayüz Görselleri (UI Showcase)
+*Run 2 League platformunun yüksek kontrastlı, atletik performans odaklı kullanıcı arayüzü görselleri:*
 
-## 📚 7. Referanslar
+![Uygulama Giriş Ekranı](arayuz_giris.png)
+![Canlı Liderlik Tablosu](arayuz_liderlik.png)
+
+## 📚 9. Referanslar
 1. Kocaeli Üniversitesi TBL331 Ders Notları
 2. [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/) - Trigger ve Procedure yapıları için.
 3. [Streamlit Documentation](https://docs.streamlit.io/) - Arayüz ve modern CSS entegrasyonları için.
