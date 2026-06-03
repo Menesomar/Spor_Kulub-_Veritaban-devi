@@ -5,13 +5,13 @@ import os
 import datetime
 from dotenv import load_dotenv
 
-# Ortam değişkenlerini yükle
+
 load_dotenv()
 
-# --- SAYFA AYARLARI ---
+
 st.set_page_config(page_title="Run 2 League", page_icon="🏃‍♂️", layout="wide", initial_sidebar_state="expanded")
 
-# --- RUN 2 LEAGUE (SPORTİF & DİNAMİK) CSS ---
+
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,900;1,800;1,900&family=Roboto+Mono:wght@700&display=swap');
@@ -186,7 +186,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Veritabanı Bağlantısı
+
 @st.cache_resource
 def init_connection():
     try:
@@ -204,7 +204,7 @@ def init_connection():
 
 conn = init_connection()
 
-# Oturum Ayarları
+
 if "giris_yapildi" not in st.session_state:
     st.session_state.giris_yapildi = False
     st.session_state.kullanici_id = None
@@ -233,16 +233,13 @@ def logout():
     st.session_state.rol = ""
     st.rerun()
 
-# ==========================================
-# --- ARAYÜZ (FRONTEND) GÖRÜNÜMÜ ---
-# ==========================================
 
 if not st.session_state.giris_yapildi:
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        # --- RUN 2 LEAGUE MARKA KİMLİĞİ ---
+   
         st.markdown("""
         <div style='background-color: #FFFFFF; padding: 40px 30px; border-radius: 8px; border: 2px solid #E5E7EB; border-top: 8px solid #FF4B00; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;'>
             <h1 style='color: #111111; font-weight: 900; font-style: italic; letter-spacing: -2px; text-transform: uppercase; margin-bottom: 5px; font-size: 3.5rem;'>RUN <span style='color: #FF4B00;'>2</span> LEAGUE</h1>
@@ -301,7 +298,7 @@ if not st.session_state.giris_yapildi:
                             st.error(f"Kayıt hatası: {e}")
 
 else:
-    # --- YAN MENÜ MARKA ALANI ---
+   
     st.sidebar.markdown("<h2 style='color: #111111; font-weight: 900; font-style: italic; letter-spacing: -1px; text-align: center; margin-bottom: 0;'>RUN <span style='color: #FF4B00;'>2</span> LEAGUE</h2>", unsafe_allow_html=True)
     st.sidebar.markdown("<hr style='border-color: #E5E7EB; margin: 10px 0 20px 0;'>", unsafe_allow_html=True)
     
