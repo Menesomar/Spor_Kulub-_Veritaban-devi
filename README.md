@@ -4,8 +4,8 @@
 **TBL331: Veritabanı Yönetim Sistemleri - 2025-2026 Bahar Dönemi Projesi**
 
 **Proje Ekibi:**
-* Rıdvan Elen
-* Muhammed Enes Omar
+* Rıdvan Elen 231307046
+* Muhammed Enes Omar 231307026
 
 ---
 
