@@ -1,4 +1,4 @@
-<img width="1704" height="830" alt="Ekran görüntüsü 2026-06-03 124036" src="https://github.com/user-attachments/assets/8c02362c-898e-47e9-8b07-766bc9a24164" />
+
 # 🏃‍♂️ Koşu Kulübü: Liderlik ve Takip Sistemi (KosuKulubuDB)
 
 **Kocaeli Üniversitesi - Bilişim Sistemleri Mühendisliği Bölümü**
@@ -47,8 +47,7 @@ Proje, İstemci-Sunucu (Client-Server) mimarisine benzer bir yapıda, "Veri Katm
 ## 📊 5. Veritabanı Diyagramı (ER)
 Veritabanımız, 5N (Normalizasyon) kurallarına uygun olarak tasarlanmış olup, toplam 6 adet birbiriyle ilişkili (Primary/Foreign Key) tablodan oluşmaktadır.
 
-*[Buraya MySQL Workbench üzerinden aldığınız EER Diyagramının ekran görüntüsünü sürükleyip bırakın]*
-
+<img width="1704" height="830" alt="Ekran görüntüsü 2026-06-03 124036" src="https://github.com/user-attachments/assets/8c02362c-898e-47e9-8b07-766bc9a24164" />
 ## 🏢 6. Genel Yapı
 Proje; üyelerin kayıt olup sisteme giriş yapabildiği, adminlerin sistem üzerinden duyuru paylaşabildiği ve üyelerin koşularını rotalara göre kaydedebildiği bir ekosistemdir. Sistemde;
 * **Trigger'lar** ile puanlamalar ve küme düşme/çıkma işlemleri otomatik hesaplanır.
