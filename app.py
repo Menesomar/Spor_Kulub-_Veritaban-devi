@@ -11,19 +11,20 @@ load_dotenv()
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="Koşu Kulübü Ligi", page_icon="🏃‍♂️", layout="wide", initial_sidebar_state="expanded")
 
-# --- PREMIUM GLASSMORPHISM & ANİMASYON CSS ---
+# --- LÜKS KARANLIK MOD & BAKIR (DARK & COPPER) CSS ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
+    /* Genel Tipografi ve Renkler */
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
-        color: #1E293B;
+        color: #E2E8F0; /* Açık gümüş rengi metinler */
     }
     
-    /* Arka planı çok hafif bir degrade yaparak cam efektinin parlamasını sağla */
+    /* Arka Plan: Derin Obsidyen ve Antrasit Radyal Geçiş */
     .stApp {
-        background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
+        background: radial-gradient(circle at 50% 0%, #1E293B 0%, #020617 100%);
     }
 
     #MainMenu {visibility: hidden;}
@@ -36,131 +37,166 @@ st.markdown("""
 
     /* --- SAYFA YÜKLENME ANİMASYONU --- */
     @keyframes fadeUp {
-        0% { opacity: 0; transform: translateY(20px); }
+        0% { opacity: 0; transform: translateY(30px); }
         100% { opacity: 1; transform: translateY(0); }
     }
     .main .block-container {
         animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        padding-top: 2rem !important;
     }
 
-    /* --- YAN MENÜ (GLASSMORPHISM / CAM EFEKTİ) --- */
+    /* --- YAN MENÜ (KOKPİT HİSSİYATI) --- */
     [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.7) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.6) !important;
-        box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+        background: rgba(15, 23, 42, 0.6) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-right: 1px solid rgba(193, 154, 107, 0.15) !important;
+        box-shadow: 4px 0 30px rgba(0,0,0,0.5);
     }
     
     div[role="radiogroup"] > label {
         background-color: transparent !important;
-        border-radius: 12px !important;
-        padding: 14px 20px !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
         margin-bottom: 8px !important;
         border: 1px solid transparent !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     div[role="radiogroup"] > label:hover {
-        background: rgba(255, 255, 255, 0.9) !important;
-        border: 1px solid rgba(255, 255, 255, 1) !important;
-        transform: translateX(6px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        background: rgba(30, 41, 59, 0.8) !important;
+        border: 1px solid rgba(193, 154, 107, 0.3) !important;
+        transform: translateX(4px);
     }
     
     div[role="radiogroup"] > label[data-checked="true"] {
-        background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%) !important;
-        border-left: 5px solid #C19A6B !important;
-        border-top: 1px solid rgba(255,255,255,0.8) !important;
-        border-bottom: 1px solid rgba(255,255,255,0.8) !important;
-        border-right: 1px solid rgba(255,255,255,0.8) !important;
-        border-radius: 0 12px 12px 0 !important;
-        box-shadow: 0 4px 15px rgba(193, 154, 107, 0.08) !important;
+        background: linear-gradient(90deg, rgba(193, 154, 107, 0.15) 0%, transparent 100%) !important;
+        border-left: 4px solid #C19A6B !important;
+        border-top: 1px solid rgba(193, 154, 107, 0.2) !important;
+        border-bottom: 1px solid rgba(193, 154, 107, 0.2) !important;
+        border-right: none !important;
+        border-radius: 0 8px 8px 0 !important;
+    }
+    
+    div[role="radiogroup"] > label[data-checked="true"] p {
+        color: #C19A6B !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 10px rgba(193, 154, 107, 0.3);
     }
 
-    /* --- PREMIUM BUTONLAR (DİNAMİK GÖLGE VE IŞIMA) --- */
+    /* --- PREMIUM BUTONLAR (METALİK BAKIR ETKİSİ) --- */
     .stButton>button {
-        background: linear-gradient(135deg, #C19A6B 0%, #A67C52 100%) !important;
+        background: linear-gradient(135deg, #C19A6B 0%, #8B633D 100%) !important;
         color: #FFFFFF !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
-        border-radius: 12px !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 8px !important;
         font-weight: 600 !important;
         letter-spacing: 0.5px;
-        padding: 0.7rem 1.5rem !important;
-        box-shadow: 0 6px 16px rgba(193, 154, 107, 0.25), inset 0 2px 4px rgba(255,255,255,0.1) !important;
+        padding: 0.8rem 1.5rem !important;
+        box-shadow: 0 4px 15px rgba(193, 154, 107, 0.2), inset 0 1px 2px rgba(255,255,255,0.2) !important;
         transition: all 0.3s ease !important;
         width: 100%;
-        position: relative;
-        overflow: hidden;
+        text-transform: uppercase;
+        font-size: 0.85rem !important;
     }
     
     .stButton>button:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 10px 25px rgba(193, 154, 107, 0.4), inset 0 2px 4px rgba(255,255,255,0.2) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(193, 154, 107, 0.4), inset 0 1px 2px rgba(255,255,255,0.3) !important;
+        background: linear-gradient(135deg, #D4A97A 0%, #9A724A 100%) !important;
     }
 
-    /* --- GİRİŞ ALANLARI --- */
+    /* --- GİRİŞ ALANLARI (KOYU CAM) --- */
     div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, div[data-baseweb="textarea"] > div {
-        border-radius: 12px !important;
-        border: 1px solid rgba(203, 213, 225, 0.6) !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(8px) !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(148, 163, 184, 0.2) !important;
+        background: rgba(15, 23, 42, 0.7) !important;
+        color: #F8FAFC !important;
         transition: all 0.3s ease !important;
     }
     
     div[data-baseweb="input"] > div:focus-within, div[data-baseweb="select"] > div:focus-within, div[data-baseweb="textarea"] > div:focus-within {
         border-color: #C19A6B !important;
-        background: #FFFFFF !important;
-        box-shadow: 0 0 0 3px rgba(193, 154, 107, 0.15) !important;
+        box-shadow: 0 0 0 2px rgba(193, 154, 107, 0.2) !important;
+        background: rgba(15, 23, 42, 0.9) !important;
     }
 
-    /* --- METRİK KARTLARI (3D DERİNLİK VE CAM) --- */
+    /* --- METRİK KARTLARI (RENDER KALİTESİNDE DERİNLİK) --- */
     div[data-testid="metric-container"] {
-        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.9);
-        border-radius: 20px;
-        padding: 28px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), inset 0 2px 5px rgba(255,255,255,0.5);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border-left: 5px solid #C19A6B;
+        border: 1px solid rgba(193, 154, 107, 0.15);
+        border-left: 4px solid #C19A6B;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255,255,255,0.05);
+        transition: all 0.3s ease;
     }
     
     div[data-testid="metric-container"]:hover {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 2px 5px rgba(255,255,255,0.8);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 15px rgba(193, 154, 107, 0.15);
+        border: 1px solid rgba(193, 154, 107, 0.3);
     }
     
     div[data-testid="metric-container"] label {
-        color: #64748B !important;
-        font-size: 1rem !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.5px;
+        color: #94A3B8 !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     div[data-testid="metric-container"] div[data-testid="stMetricValue"] {
-        color: #1E293B !important;
-        font-size: 2.5rem !important;
+        color: #FFFFFF !important;
+        font-size: 2.4rem !important;
         font-weight: 800 !important;
-        background: -webkit-linear-gradient(45deg, #1E293B, #C19A6B);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
     /* --- DUYURU KARTLARI (EXPANDER) --- */
     .streamlit-expanderHeader {
-        background: rgba(255, 255, 255, 0.85) !important;
+        background: rgba(30, 41, 59, 0.6) !important;
         backdrop-filter: blur(8px) !important;
-        border-radius: 14px !important;
-        border: 1px solid rgba(255,255,255,0.9) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
-        font-weight: 700 !important;
-        color: #334155 !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(193, 154, 107, 0.1) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+        font-weight: 600 !important;
+        color: #E2E8F0 !important;
         transition: all 0.3s ease;
     }
     .streamlit-expanderHeader:hover {
-        background: #FFFFFF !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.05) !important;
+        background: rgba(30, 41, 59, 0.9) !important;
+        border-color: rgba(193, 154, 107, 0.3) !important;
+    }
+    
+    /* Sekme Menüleri */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: rgba(15, 23, 42, 0.5);
+        border-radius: 8px;
+        padding: 4px;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .stTabs [data-baseweb="tab"] {
+        color: #94A3B8;
+    }
+    .stTabs [aria-selected="true"] {
+        background: rgba(193, 154, 107, 0.15) !important;
+        color: #C19A6B !important;
+        border-bottom-color: #C19A6B !important;
+    }
+    
+    /* Tablo Görünümü */
+    [data-testid="stDataFrame"] {
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: 12px;
+        padding: 10px;
+        border: 1px solid rgba(193, 154, 107, 0.1);
+    }
+    
+    /* Çizgiler */
+    hr {
+        border-color: rgba(193, 154, 107, 0.1) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -223,8 +259,16 @@ if not st.session_state.giris_yapildi:
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("<h1 style='text-align: center; color: #1E293B; font-weight: 800; letter-spacing: -1px;'>🏃‍♂️ Koşu Kulübü Ligi</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #64748B; font-size: 1.1rem; margin-bottom: 2rem;'>Sisteme giriş yapın veya yeni bir maceraya katılın.</p>", unsafe_allow_html=True)
+        # Daha premium, dolu gösteren bir Header kartı
+        st.markdown("""
+        <div style='background: rgba(30,41,59,0.5); padding: 30px; border-radius: 16px; border: 1px solid rgba(193,154,107,0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center;'>
+            <h1 style='color: #FFFFFF; font-weight: 800; letter-spacing: -1px; margin-bottom: 0px;'>🏃‍♂️ KOŞU KULÜBÜ</h1>
+            <h4 style='color: #C19A6B; font-weight: 500; letter-spacing: 3px; margin-top: 0px; margin-bottom: 20px;'>PERFORMANS SİSTEMİ</h4>
+            <p style='color: #94A3B8; font-size: 1rem;'>Sisteme giriş yapın veya yeni bir maceraya katılın.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔑 Giriş Yap", "📝 Yeni Kayıt Oluştur"])
         
@@ -277,28 +321,42 @@ if not st.session_state.giris_yapildi:
 
 else:
     # --- ANA SİSTEM ---
-    st.sidebar.markdown(f"<h3 style='color: #1E293B; font-weight: 800;'>Hoş geldin, <br><span style='color: #C19A6B;'>{st.session_state.kullanici_adi}</span> 👋</h3>", unsafe_allow_html=True)
-    st.sidebar.caption(f"Yetki Seviyesi: **{st.session_state.rol}**")
+    st.sidebar.markdown(f"<h3 style='color: #FFFFFF; font-weight: 800; margin-bottom: 0;'>{st.session_state.kullanici_adi}</h3>", unsafe_allow_html=True)
+    st.sidebar.markdown(f"<p style='color: #C19A6B; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px;'>{st.session_state.rol.upper()}</p>", unsafe_allow_html=True)
+    
+    st.sidebar.markdown("<hr style='border-color: rgba(193, 154, 107, 0.2); margin: 10px 0;'>", unsafe_allow_html=True)
+    st.sidebar.caption("SİSTEM DURUMU")
+    st.sidebar.progress(85, text="Sezon Aktifliği (%85)")
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
     
-    # MENÜ DÜZENİ
+    # === DEĞİŞİKLİĞİN YAPILDIĞI YER 1: MENÜ YÖNETİMİ ===
     if st.session_state.rol == "Admin":
         menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle (Admin)", "⚖️ Ceza & Lig Düşürme", "✍️ Duyuru Yayınla", "👥 Tüm Üyeler", "👤 Kendi Profilim"]
     else:
-        menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "👤 Kendi Profilim"]
+        # Normal üyeler (Admin olmayanlar) için yeni menü seçeneği eklendi
+        menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "🏃‍♂️ Koşumu Kaydet", "👤 Kendi Profilim"]
         
     secim = st.sidebar.radio("Sistem Menüsü", menu, label_visibility="collapsed")
     
-    st.sidebar.markdown("<br><br><br>", unsafe_allow_html=True)
-    if st.sidebar.button("🚪 Sistemden Çıkış Yap"):
+    st.sidebar.markdown("<br><br>", unsafe_allow_html=True)
+    if st.sidebar.button("🚪 Sistemden Çıkış"):
         logout()
-
-    st.markdown("<div style='padding-top: 1rem;'></div>", unsafe_allow_html=True)
 
     # --- 1. DUYURULAR PANOSU ---
     if secim == "📢 Duyurular":
-        st.title("📢 Kulüp Panosu")
-        st.markdown("<p style='color: #64748B;'>Kulübümüzle ilgili en güncel haberler ve bildirimler.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>📢 Kulüp Panosu</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Sistem genelindeki en son gelişmeler ve bildirimler.</p><hr>", unsafe_allow_html=True)
+        
+        dash_col1, dash_col2, dash_col3 = st.columns(3)
+        with dash_col1:
+            st.info("🏃‍♂️ Sezon Hedefi: 10.000 KM")
+        with dash_col2:
+            st.success("🟢 Sistem Durumu: Çevrimiçi")
+        with dash_col3:
+            st.warning("⚡ Son Güncelleme: Bugün")
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        
         try:
             query = """
                 SELECT D.Baslik, D.Icerik, D.Tarih, U.Ad, U.Soyad 
@@ -311,7 +369,7 @@ else:
             if not df_duyuru.empty:
                 for index, row in df_duyuru.iterrows():
                     with st.expander(f"📌 {row['Baslik']} - ({row['Tarih'].strftime('%d.%m.%Y %H:%M')})", expanded=True):
-                        st.write(row['Icerik'])
+                        st.markdown(f"<p style='color: #E2E8F0; font-size: 1.05rem;'>{row['Icerik']}</p>", unsafe_allow_html=True)
                         st.caption(f"Yayınlayan: {row['Ad']} {row['Soyad']}")
             else:
                 st.info("Henüz panoda bir duyuru bulunmuyor.")
@@ -320,15 +378,15 @@ else:
 
     # --- 2. DUYURU YAYINLA (Sadece Admin) ---
     elif secim == "✍️ Duyuru Yayınla":
-        st.title("✍️ Yeni Duyuru Yayınla")
-        st.markdown("<p style='color: #64748B;'>Tüm üyelerin görebileceği yeni bir duyuru oluşturun.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>✍️ Yeni Duyuru Yayınla</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Tüm üyelerin görebileceği yeni bir duyuru oluşturun.</p><hr>", unsafe_allow_html=True)
         
         with st.form("duyuru_form", clear_on_submit=True):
             baslik = st.text_input("Duyuru Başlığı")
             icerik = st.text_area("Duyuru İçeriği", height=150)
             
             st.markdown("<br>", unsafe_allow_html=True)
-            if st.form_submit_button("Panoda Yayınla 📣"):
+            if st.form_submit_button("PANODA YAYINLA 📣"):
                 if baslik and icerik:
                     try:
                         cursor = conn.cursor()
@@ -343,8 +401,8 @@ else:
 
     # --- 3. LİDERLİK TABLOSU ---
     elif secim == "🏆 Liderlik Tablosu":
-        st.title("🏆 Canlı Liderlik Tablosu")
-        st.markdown("<p style='color: #64748B;'>Liglere göre güncel puan durumu ve sıralamalar.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>🏆 Canlı Liderlik Tablosu</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Liglere göre güncel puan durumu ve sıralamalar.</p><hr>", unsafe_allow_html=True)
         try:
             query = "SELECT * FROM VW_CanliLigSiralama"
             df = pd.read_sql(query, conn)
@@ -362,10 +420,42 @@ else:
         except Exception as e:
             st.error(f"Tablo çekilirken hata oluştu: {e}")
 
-    # --- 4. YENİ KOŞU EKLE ---
+    # === DEĞİŞİKLİĞİN YAPILDIĞI YER 2: YENİ ÜYE KOŞU EKLEME EKRANI ===
+    elif secim == "🏃‍♂️ Koşumu Kaydet":
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>🏃‍♂️ Antrenmanını Kaydet</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Bugün tamamladığın rotayı ve değerlerini gir. Puanın ve lig durumun otomatik hesaplanacaktır.</p><hr>", unsafe_allow_html=True)
+        
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT Rota_ID, RotaAdi, ZorlukKatsayisi FROM Rotalar") 
+            rotalar = cursor.fetchall()
+            rota_sozlugu = {f"{r['RotaAdi']} (Zorluk: {r['ZorlukKatsayisi']})": r['Rota_ID'] for r in rotalar}
+            cursor.close()
+
+            with st.form("kendi_kosumu_ekle_form", clear_on_submit=True):
+                secilen_rota = st.selectbox("Koştuğun Rota", list(rota_sozlugu.keys()))
+                
+                col1, col2 = st.columns(2)
+                mesafe_km = col1.number_input("Koşulan Mesafe (KM)", min_value=0.1, step=0.1, format="%.1f")
+                sure_dk = col2.number_input("Toplam Süre (Dakika)", min_value=1, step=1)
+                
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.form_submit_button("SİSTEME GÖNDER 🚀"):
+                    try:
+                        cursor = conn.cursor()
+                        # DİKKAT: Üye ID'si sorulmuyor, doğrudan Session State'den (Giriş yapan kişiden) alınıyor!
+                        cursor.callproc('SP_YeniKosuEkle', (st.session_state.kullanici_id, rota_sozlugu[secilen_rota], mesafe_km, sure_dk))
+                        st.success("🎉 Harika iş! Koşun başarıyla sisteme kaydedildi ve istatistiklerin güncellendi.")
+                        st.balloons()
+                    except mysql.connector.Error as err:
+                        st.error(f"Kayıt Reddedildi: {err.msg}")
+        except Exception as e:
+            st.error(f"Hata: {e}")
+
+    # --- 4. YENİ KOŞU EKLE (ADMİN) ---
     elif secim == "➕ Yeni Koşu Ekle (Admin)":
-        st.title("➕ Yeni Koşu Verisi Gir")
-        st.markdown("<p style='color: #64748B;'>Sisteme manuel koşu verisi girişi (Hile koruması aktiftir).</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>➕ Yeni Koşu Verisi Gir</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Sisteme manuel koşu verisi girişi (Hile koruması aktiftir).</p><hr>", unsafe_allow_html=True)
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute("SELECT Rota_ID, RotaAdi, ZorlukKatsayisi FROM Rotalar") 
@@ -386,7 +476,7 @@ else:
                 sure_dk = col2.number_input("Koşu Süresi (Dakika)", min_value=1, step=1)
                 
                 st.markdown("<br>", unsafe_allow_html=True)
-                if st.form_submit_button("Koşuyu Kaydet ⏱️"):
+                if st.form_submit_button("KOŞUYU KAYDET ⏱️"):
                     try:
                         cursor = conn.cursor()
                         cursor.callproc('SP_YeniKosuEkle', (uye_sozlugu[secilen_uye], rota_sozlugu[secilen_rota], mesafe_km, sure_dk))
@@ -398,8 +488,8 @@ else:
 
     # --- 5. CEZA VE LİG DÜŞÜRME ---
     elif secim == "⚖️ Ceza & Lig Düşürme":
-        st.title("⚖️ Ceza Puanı Uygula")
-        st.markdown("<p style='color: #64748B;'>Üyelerden puan silin ve gerekirse lig düşürme işlemini tetikleyin.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>⚖️ Ceza Puanı Uygula</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Üyelerden puan silin ve gerekirse lig düşürme işlemini tetikleyin.</p><hr>", unsafe_allow_html=True)
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute("""
@@ -417,7 +507,7 @@ else:
                 ceza_puani = st.number_input("Silinecek Puan Miktarı", min_value=1, step=50)
                 
                 st.markdown("<br>", unsafe_allow_html=True)
-                if st.form_submit_button("Cezayı Uygula 📉"):
+                if st.form_submit_button("CEZAYI UYGULA 📉"):
                     uye_id = uye_sozlugu[secilen_uye]
                     try:
                         cursor = conn.cursor()
@@ -430,8 +520,8 @@ else:
 
     # --- 6. TÜM ÜYELER ---
     elif secim == "👥 Tüm Üyeler":
-        st.title("👥 Kulüp Üyeleri Yönetimi")
-        st.markdown("<p style='color: #64748B;'>Sisteme kayıtlı tüm kullanıcıların listesi.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: #FFFFFF; font-weight: 700;'>👥 Kulüp Üyeleri</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Sisteme kayıtlı tüm kullanıcıların listesi.</p><hr>", unsafe_allow_html=True)
         try:
             df_uyeler = pd.read_sql("SELECT Uye_ID as ID, Ad, Soyad, Eposta, Rol, Cinsiyet, DATE_FORMAT(KayitTarihi, '%d.%m.%Y') as 'Kayıt Tarihi' FROM Uyeler ORDER BY Uye_ID DESC", conn)
             st.dataframe(df_uyeler, use_container_width=True, hide_index=True)
@@ -439,21 +529,23 @@ else:
 
     # --- 7. KENDİ PROFİLİM ---
     elif secim == "👤 Kendi Profilim":
-        st.title("👤 Profilim")
-        st.markdown("<p style='color: #64748B;'>Kişisel koşu geçmişiniz ve güncel istatistikleriniz.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color: #FFFFFF; font-weight: 700;'>👤 Profil: {st.session_state.kullanici_adi}</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94A3B8;'>Kişisel koşu geçmişiniz ve güncel istatistikleriniz.</p><hr>", unsafe_allow_html=True)
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute("SELECT L.LigAdi, USL.ToplamPuan FROM Uye_Sezon_Lig USL JOIN Ligler L ON USL.Lig_ID = L.Lig_ID WHERE USL.Uye_ID = %s AND USL.Sezon_Yili = %s", (st.session_state.kullanici_id, datetime.datetime.now().year))
             lig_durumu = cursor.fetchone()
             
             if lig_durumu:
-                m_col1, m_col2 = st.columns(2)
+                m_col1, m_col2, m_col3 = st.columns(3)
                 with m_col1:
-                    st.metric("Güncel Liginiz", f"🏅 {lig_durumu['LigAdi']}")
+                    st.metric("GÜNCEL LİGİNİZ", f"{lig_durumu['LigAdi']}")
                 with m_col2:
-                    st.metric("Toplam Puanınız", f"⭐ {lig_durumu['ToplamPuan']}")
+                    st.metric("TOPLAM PUAN", f"{lig_durumu['ToplamPuan']}")
+                with m_col3:
+                    st.metric("SEZON", str(datetime.datetime.now().year))
             
-            st.markdown("<br><h4 style='color: #1E293B; font-weight: 700;'>Son Koşularınız</h4>", unsafe_allow_html=True)
+            st.markdown("<br><h4 style='color: #FFFFFF; font-weight: 600;'>Son Koşularınız</h4>", unsafe_allow_html=True)
             query = f"SELECT R.RotaAdi as 'Rota', DATE_FORMAT(K.KosuTarihi, '%d.%m.%Y') as 'Tarih', K.Mesafe_KM as 'Mesafe (KM)', K.Sure_Dakika as 'Süre (Dk)', K.KazanilanPuan as 'Kazanılan Puan' FROM Kosular K JOIN Rotalar R ON K.Rota_ID = R.Rota_ID WHERE K.Uye_ID = {st.session_state.kullanici_id} ORDER BY K.KosuTarihi DESC"
             df_gecmis = pd.read_sql(query, conn)
             
