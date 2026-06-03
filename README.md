@@ -47,7 +47,8 @@ Proje, İstemci-Sunucu (Client-Server) mimarisine benzer bir yapıda, "Veri Katm
 ## 📊 5. Veritabanı Diyagramı (ER)
 Veritabanımız, 5N (Normalizasyon) kurallarına uygun olarak tasarlanmış olup, toplam 6 adet birbiriyle ilişkili (Primary/Foreign Key) tablodan oluşmaktadır.
 
-<img width="1704" height="830" alt="Ekran görüntüsü 2026-06-03 124036" src="https://github.com/user-attachments/assets/8c02362c-898e-47e9-8b07-766bc9a24164" />
+<img width="1919" height="905" alt="Ekran görüntüsü 2026-06-04 022409" src="https://github.com/user-attachments/assets/b0c6f762-49e5-4056-bb8f-2c937e87bf56" />
+
 ## 🏢 6. Genel Yapı
 Proje; üyelerin kayıt olup sisteme giriş yapabildiği, adminlerin sistem üzerinden duyuru paylaşabildiği ve üyelerin koşularını rotalara göre kaydedebildiği bir ekosistemdir. Sistemde;
 * **Trigger'lar** ile puanlamalar ve küme düşme/çıkma işlemleri otomatik hesaplanır.
