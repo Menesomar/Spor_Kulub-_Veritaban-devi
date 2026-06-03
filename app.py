@@ -8,8 +8,162 @@ from dotenv import load_dotenv
 # Ortam değişkenlerini yükle
 load_dotenv()
 
-# Sayfa Ayarları
-st.set_page_config(page_title="Koşu Kulübü Ligi", page_icon="🏃‍♂️", layout="wide")
+# --- SAYFA AYARLARI ---
+st.set_page_config(page_title="Koşu Kulübü Ligi", page_icon="🏃‍♂️", layout="wide", initial_sidebar_state="expanded")
+
+# --- PREMIUM GLASSMORPHISM & ANİMASYON CSS ---
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+        color: #1E293B;
+    }
+    
+    /* Arka planı çok hafif bir degrade yaparak cam efektinin parlamasını sağla */
+    .stApp {
+        background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
+    }
+
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stAppDeployButton {display: none !important;}
+    
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
+    /* --- SAYFA YÜKLENME ANİMASYONU --- */
+    @keyframes fadeUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .main .block-container {
+        animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* --- YAN MENÜ (GLASSMORPHISM / CAM EFEKTİ) --- */
+    [data-testid="stSidebar"] {
+        background: rgba(255, 255, 255, 0.7) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+    }
+    
+    div[role="radiogroup"] > label {
+        background-color: transparent !important;
+        border-radius: 12px !important;
+        padding: 14px 20px !important;
+        margin-bottom: 8px !important;
+        border: 1px solid transparent !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    div[role="radiogroup"] > label:hover {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(255, 255, 255, 1) !important;
+        transform: translateX(6px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    
+    div[role="radiogroup"] > label[data-checked="true"] {
+        background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%) !important;
+        border-left: 5px solid #C19A6B !important;
+        border-top: 1px solid rgba(255,255,255,0.8) !important;
+        border-bottom: 1px solid rgba(255,255,255,0.8) !important;
+        border-right: 1px solid rgba(255,255,255,0.8) !important;
+        border-radius: 0 12px 12px 0 !important;
+        box-shadow: 0 4px 15px rgba(193, 154, 107, 0.08) !important;
+    }
+
+    /* --- PREMIUM BUTONLAR (DİNAMİK GÖLGE VE IŞIMA) --- */
+    .stButton>button {
+        background: linear-gradient(135deg, #C19A6B 0%, #A67C52 100%) !important;
+        color: #FFFFFF !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px;
+        padding: 0.7rem 1.5rem !important;
+        box-shadow: 0 6px 16px rgba(193, 154, 107, 0.25), inset 0 2px 4px rgba(255,255,255,0.1) !important;
+        transition: all 0.3s ease !important;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stButton>button:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 25px rgba(193, 154, 107, 0.4), inset 0 2px 4px rgba(255,255,255,0.2) !important;
+    }
+
+    /* --- GİRİŞ ALANLARI --- */
+    div[data-baseweb="input"] > div, div[data-baseweb="select"] > div, div[data-baseweb="textarea"] > div {
+        border-radius: 12px !important;
+        border: 1px solid rgba(203, 213, 225, 0.6) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(8px) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    div[data-baseweb="input"] > div:focus-within, div[data-baseweb="select"] > div:focus-within, div[data-baseweb="textarea"] > div:focus-within {
+        border-color: #C19A6B !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 0 0 3px rgba(193, 154, 107, 0.15) !important;
+    }
+
+    /* --- METRİK KARTLARI (3D DERİNLİK VE CAM) --- */
+    div[data-testid="metric-container"] {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.9);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), inset 0 2px 5px rgba(255,255,255,0.5);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-left: 5px solid #C19A6B;
+    }
+    
+    div[data-testid="metric-container"]:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), inset 0 2px 5px rgba(255,255,255,0.8);
+    }
+    
+    div[data-testid="metric-container"] label {
+        color: #64748B !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px;
+    }
+    
+    div[data-testid="metric-container"] div[data-testid="stMetricValue"] {
+        color: #1E293B !important;
+        font-size: 2.5rem !important;
+        font-weight: 800 !important;
+        background: -webkit-linear-gradient(45deg, #1E293B, #C19A6B);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* --- DUYURU KARTLARI (EXPANDER) --- */
+    .streamlit-expanderHeader {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(8px) !important;
+        border-radius: 14px !important;
+        border: 1px solid rgba(255,255,255,0.9) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+        font-weight: 700 !important;
+        color: #334155 !important;
+        transition: all 0.3s ease;
+    }
+    .streamlit-expanderHeader:hover {
+        background: #FFFFFF !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.05) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Veritabanı Bağlantısı
 @st.cache_resource
@@ -65,71 +219,86 @@ def logout():
 # ==========================================
 
 if not st.session_state.giris_yapildi:
-    st.title("🏃‍♂️ Koşu Kulübü Sistemine Giriş")
-    st.write("Sisteme giriş yapabilir veya yeni bir hesap oluşturabilirsiniz.")
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
     
-    tab1, tab2 = st.tabs(["🔑 Giriş Yap", "📝 Yeni Kayıt Oluştur"])
-    
-    # --- GİRİŞ YAP SEKME ---
-    with tab1:
-        with st.form("login_form"):
-            eposta = st.text_input("E-posta Adresi")
-            sifre = st.text_input("Şifre", type="password")
-            if st.form_submit_button("Sisteme Giriş Yap"):
-                login(eposta, sifre)
+    with col2:
+        st.markdown("<h1 style='text-align: center; color: #1E293B; font-weight: 800; letter-spacing: -1px;'>🏃‍♂️ Koşu Kulübü Ligi</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #64748B; font-size: 1.1rem; margin-bottom: 2rem;'>Sisteme giriş yapın veya yeni bir maceraya katılın.</p>", unsafe_allow_html=True)
+        
+        tab1, tab2 = st.tabs(["🔑 Giriş Yap", "📝 Yeni Kayıt Oluştur"])
+        
+        # --- GİRİŞ YAP SEKME ---
+        with tab1:
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.form("login_form"):
+                eposta = st.text_input("E-posta Adresi")
+                sifre = st.text_input("Şifre", type="password")
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.form_submit_button("Sisteme Giriş Yap"):
+                    login(eposta, sifre)
+                    
+        # --- KAYIT OL SEKME ---
+        with tab2:
+            st.markdown("<br>", unsafe_allow_html=True)
+            with st.form("kayit_form"):
+                k_col1, k_col2 = st.columns(2)
+                yeni_ad = k_col1.text_input("Ad")
+                yeni_soyad = k_col2.text_input("Soyad")
                 
-    # --- KAYIT OL SEKME ---
-    with tab2:
-        st.subheader("Yeni Üye Kaydı")
-        with st.form("kayit_form"):
-            yeni_ad = st.text_input("Ad")
-            yeni_soyad = st.text_input("Soyad")
-            yeni_eposta = st.text_input("E-posta Adresi")
-            yeni_cinsiyet = st.selectbox("Cinsiyet", ["Erkek (E)", "Kadın (K)"])
-            yeni_sifre = st.text_input("Şifre", type="password")
-            yeni_sifre_tekrar = st.text_input("Şifre (Tekrar)", type="password")
-            
-            if st.form_submit_button("Kayıt Ol"):
-                if yeni_sifre != yeni_sifre_tekrar:
-                    st.error("Şifreler eşleşmiyor! Lütfen kontrol edin.")
-                elif not yeni_ad or not yeni_soyad or not yeni_eposta or not yeni_sifre:
-                    st.error("Lütfen tüm alanları doldurun.")
-                else:
-                    cinsiyet_kodu = "E" if "Erkek" in yeni_cinsiyet else "K"
-                    try:
-                        cursor = conn.cursor()
-                        cursor.execute("INSERT INTO Uyeler (Ad, Soyad, Eposta, Cinsiyet, Sifre) VALUES (%s, %s, %s, %s, %s)", (yeni_ad, yeni_soyad, yeni_eposta, cinsiyet_kodu, yeni_sifre))
-                        yeni_uye_id = cursor.lastrowid
-                        mevcut_yil = datetime.datetime.now().year
-                        cursor.execute("INSERT INTO Uye_Sezon_Lig (Uye_ID, Lig_ID, Sezon_Yili, ToplamPuan) VALUES (%s, %s, %s, %s)", (yeni_uye_id, 1, mevcut_yil, 0))
-                        conn.commit()
-                        cursor.close()
-                        st.success("🎉 Kayıt başarıyla oluşturuldu! Şimdi 'Giriş Yap' sekmesinden sisteme girebilirsiniz.")
-                    except mysql.connector.IntegrityError:
-                        st.error("Bu e-posta adresi zaten kullanımda!")
-                    except Exception as e:
-                        st.error(f"Kayıt hatası: {e}")
+                yeni_eposta = st.text_input("E-posta Adresi")
+                yeni_cinsiyet = st.selectbox("Cinsiyet", ["Erkek (E)", "Kadın (K)"])
+                
+                s_col1, s_col2 = st.columns(2)
+                yeni_sifre = s_col1.text_input("Şifre", type="password")
+                yeni_sifre_tekrar = s_col2.text_input("Şifre (Tekrar)", type="password")
+                
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.form_submit_button("Kayıt Ol ve Başla 🚀"):
+                    if yeni_sifre != yeni_sifre_tekrar:
+                        st.error("Şifreler eşleşmiyor! Lütfen kontrol edin.")
+                    elif not yeni_ad or not yeni_soyad or not yeni_eposta or not yeni_sifre:
+                        st.error("Lütfen tüm alanları doldurun.")
+                    else:
+                        cinsiyet_kodu = "E" if "Erkek" in yeni_cinsiyet else "K"
+                        try:
+                            cursor = conn.cursor()
+                            cursor.execute("INSERT INTO Uyeler (Ad, Soyad, Eposta, Cinsiyet, Sifre) VALUES (%s, %s, %s, %s, %s)", (yeni_ad, yeni_soyad, yeni_eposta, cinsiyet_kodu, yeni_sifre))
+                            yeni_uye_id = cursor.lastrowid
+                            mevcut_yil = datetime.datetime.now().year
+                            cursor.execute("INSERT INTO Uye_Sezon_Lig (Uye_ID, Lig_ID, Sezon_Yili, ToplamPuan) VALUES (%s, %s, %s, %s)", (yeni_uye_id, 1, mevcut_yil, 0))
+                            conn.commit()
+                            cursor.close()
+                            st.success("🎉 Kayıt başarıyla oluşturuldu! Şimdi 'Giriş Yap' sekmesinden sisteme girebilirsiniz.")
+                        except mysql.connector.IntegrityError:
+                            st.error("Bu e-posta adresi zaten kullanımda!")
+                        except Exception as e:
+                            st.error(f"Kayıt hatası: {e}")
 
 else:
     # --- ANA SİSTEM ---
-    st.sidebar.title(f"Hoş geldin, {st.session_state.kullanici_adi} 👋")
-    st.sidebar.success(f"Yetki Seviyesi: **{st.session_state.rol}**")
+    st.sidebar.markdown(f"<h3 style='color: #1E293B; font-weight: 800;'>Hoş geldin, <br><span style='color: #C19A6B;'>{st.session_state.kullanici_adi}</span> 👋</h3>", unsafe_allow_html=True)
+    st.sidebar.caption(f"Yetki Seviyesi: **{st.session_state.rol}**")
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
     
-    # YENİ MENÜ DÜZENİ
+    # MENÜ DÜZENİ
     if st.session_state.rol == "Admin":
         menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "➕ Yeni Koşu Ekle (Admin)", "⚖️ Ceza & Lig Düşürme", "✍️ Duyuru Yayınla", "👥 Tüm Üyeler", "👤 Kendi Profilim"]
     else:
         menu = ["📢 Duyurular", "🏆 Liderlik Tablosu", "👤 Kendi Profilim"]
         
-    secim = st.sidebar.radio("Sayfalar", menu)
-    st.sidebar.markdown("---")
-    if st.sidebar.button("Çıkış Yap 🚪"):
+    secim = st.sidebar.radio("Sistem Menüsü", menu, label_visibility="collapsed")
+    
+    st.sidebar.markdown("<br><br><br>", unsafe_allow_html=True)
+    if st.sidebar.button("🚪 Sistemden Çıkış Yap"):
         logout()
 
-    # --- YENİ EKLENEN: DUYURULAR PANOSU ---
+    st.markdown("<div style='padding-top: 1rem;'></div>", unsafe_allow_html=True)
+
+    # --- 1. DUYURULAR PANOSU ---
     if secim == "📢 Duyurular":
-        st.header("📢 Kulüp Panosu")
-        st.write("Kulübümüzle ilgili en güncel haberler ve bildirimler:")
+        st.title("📢 Kulüp Panosu")
+        st.markdown("<p style='color: #64748B;'>Kulübümüzle ilgili en güncel haberler ve bildirimler.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
         try:
             query = """
                 SELECT D.Baslik, D.Icerik, D.Tarih, U.Ad, U.Soyad 
@@ -141,8 +310,7 @@ else:
             
             if not df_duyuru.empty:
                 for index, row in df_duyuru.iterrows():
-                    # Streamlit'te şık duyuru kartları oluştur
-                    with st.expander(f"📌 {row['Baslik']} - ({row['Tarih'].strftime('%d-%m-%Y %H:%M')})", expanded=True):
+                    with st.expander(f"📌 {row['Baslik']} - ({row['Tarih'].strftime('%d.%m.%Y %H:%M')})", expanded=True):
                         st.write(row['Icerik'])
                         st.caption(f"Yayınlayan: {row['Ad']} {row['Soyad']}")
             else:
@@ -150,14 +318,16 @@ else:
         except Exception as e:
             st.error(f"Duyurular yüklenirken hata oluştu: {e}")
 
-    # --- YENİ EKLENEN: DUYURU YAYINLA (Sadece Admin) ---
+    # --- 2. DUYURU YAYINLA (Sadece Admin) ---
     elif secim == "✍️ Duyuru Yayınla":
-        st.header("✍️ Yeni Duyuru Yayınla")
-        st.write("Buradan yayınlayacağınız duyurular tüm üyelerin ana sayfasında görünecektir.")
-        with st.form("duyuru_form"):
+        st.title("✍️ Yeni Duyuru Yayınla")
+        st.markdown("<p style='color: #64748B;'>Tüm üyelerin görebileceği yeni bir duyuru oluşturun.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
+        
+        with st.form("duyuru_form", clear_on_submit=True):
             baslik = st.text_input("Duyuru Başlığı")
-            icerik = st.text_area("Duyuru İçeriği")
+            icerik = st.text_area("Duyuru İçeriği", height=150)
             
+            st.markdown("<br>", unsafe_allow_html=True)
             if st.form_submit_button("Panoda Yayınla 📣"):
                 if baslik and icerik:
                     try:
@@ -171,9 +341,10 @@ else:
                 else:
                     st.error("Lütfen başlık ve içerik alanlarını boş bırakmayın.")
 
-    # --- 1. LİDERLİK TABLOSU ---
+    # --- 3. LİDERLİK TABLOSU ---
     elif secim == "🏆 Liderlik Tablosu":
-        st.header("🏆 Liglere Göre Liderlik Tablosu")
+        st.title("🏆 Canlı Liderlik Tablosu")
+        st.markdown("<p style='color: #64748B;'>Liglere göre güncel puan durumu ve sıralamalar.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
         try:
             query = "SELECT * FROM VW_CanliLigSiralama"
             df = pd.read_sql(query, conn)
@@ -183,6 +354,7 @@ else:
                 sekmeler = st.tabs([f"🏅 {lig}" for lig in aktif_ligler])
                 for sekme, lig_adi in zip(sekmeler, aktif_ligler):
                     with sekme:
+                        st.markdown("<br>", unsafe_allow_html=True)
                         lig_verisi = df[df['LigAdi'] == lig_adi].drop(columns=['LigAdi'])
                         st.dataframe(lig_verisi, use_container_width=True, hide_index=True)
             else:
@@ -190,9 +362,10 @@ else:
         except Exception as e:
             st.error(f"Tablo çekilirken hata oluştu: {e}")
 
-    # --- 2. YENİ KOŞU EKLE ---
+    # --- 4. YENİ KOŞU EKLE ---
     elif secim == "➕ Yeni Koşu Ekle (Admin)":
-        st.header("➕ Sisteme Yeni Koşu Verisi Gir (Hile Korumalı)")
+        st.title("➕ Yeni Koşu Verisi Gir")
+        st.markdown("<p style='color: #64748B;'>Sisteme manuel koşu verisi girişi (Hile koruması aktiftir).</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute("SELECT Rota_ID, RotaAdi, ZorlukKatsayisi FROM Rotalar") 
@@ -204,7 +377,7 @@ else:
             uye_sozlugu = {f"{u['Ad']} {u['Soyad']} (ID: {u['Uye_ID']})": u['Uye_ID'] for u in uyeler}
             cursor.close()
 
-            with st.form("kosu_ekle_form"):
+            with st.form("kosu_ekle_form", clear_on_submit=True):
                 secilen_uye = st.selectbox("Koşuyu Yapan Üye", list(uye_sozlugu.keys()))
                 secilen_rota = st.selectbox("Koşulan Rota", list(rota_sozlugu.keys()))
                 
@@ -212,7 +385,8 @@ else:
                 mesafe_km = col1.number_input("Mesafe (KM)", min_value=0.1, step=0.1, format="%.1f")
                 sure_dk = col2.number_input("Koşu Süresi (Dakika)", min_value=1, step=1)
                 
-                if st.form_submit_button("Koşuyu Kaydet"):
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.form_submit_button("Koşuyu Kaydet ⏱️"):
                     try:
                         cursor = conn.cursor()
                         cursor.callproc('SP_YeniKosuEkle', (uye_sozlugu[secilen_uye], rota_sozlugu[secilen_rota], mesafe_km, sure_dk))
@@ -222,9 +396,10 @@ else:
         except Exception as e:
             st.error(f"Hata: {e}")
 
-    # --- 3. CEZA VE LİG DÜŞÜRME ---
+    # --- 5. CEZA VE LİG DÜŞÜRME ---
     elif secim == "⚖️ Ceza & Lig Düşürme":
-        st.header("⚖️ Ceza Puanı Uygula ve Küme Düşür")
+        st.title("⚖️ Ceza Puanı Uygula")
+        st.markdown("<p style='color: #64748B;'>Üyelerden puan silin ve gerekirse lig düşürme işlemini tetikleyin.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute("""
@@ -241,6 +416,7 @@ else:
                 secilen_uye = st.selectbox("Ceza Verilecek Üye", list(uye_sozlugu.keys()))
                 ceza_puani = st.number_input("Silinecek Puan Miktarı", min_value=1, step=50)
                 
+                st.markdown("<br>", unsafe_allow_html=True)
                 if st.form_submit_button("Cezayı Uygula 📉"):
                     uye_id = uye_sozlugu[secilen_uye]
                     try:
@@ -252,27 +428,37 @@ else:
         except Exception as e:
              st.error(f"Hata: {e}")
 
-    # --- 4. TÜM ÜYELER ---
+    # --- 6. TÜM ÜYELER ---
     elif secim == "👥 Tüm Üyeler":
-        st.header("👥 Kulüp Üyeleri Yönetimi")
+        st.title("👥 Kulüp Üyeleri Yönetimi")
+        st.markdown("<p style='color: #64748B;'>Sisteme kayıtlı tüm kullanıcıların listesi.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
         try:
-            df_uyeler = pd.read_sql("SELECT Uye_ID, Ad, Soyad, Eposta, Rol, Cinsiyet, KayitTarihi FROM Uyeler ORDER BY Uye_ID DESC", conn)
+            df_uyeler = pd.read_sql("SELECT Uye_ID as ID, Ad, Soyad, Eposta, Rol, Cinsiyet, DATE_FORMAT(KayitTarihi, '%d.%m.%Y') as 'Kayıt Tarihi' FROM Uyeler ORDER BY Uye_ID DESC", conn)
             st.dataframe(df_uyeler, use_container_width=True, hide_index=True)
         except Exception as e: pass
 
-    # --- 5. KENDİ PROFİLİM ---
+    # --- 7. KENDİ PROFİLİM ---
     elif secim == "👤 Kendi Profilim":
-        st.header(f"👤 {st.session_state.kullanici_adi} - Profil")
+        st.title("👤 Profilim")
+        st.markdown("<p style='color: #64748B;'>Kişisel koşu geçmişiniz ve güncel istatistikleriniz.</p><hr style='border-color: rgba(203, 213, 225, 0.4);'>", unsafe_allow_html=True)
         try:
             cursor = conn.cursor(dictionary=True)
             cursor.execute("SELECT L.LigAdi, USL.ToplamPuan FROM Uye_Sezon_Lig USL JOIN Ligler L ON USL.Lig_ID = L.Lig_ID WHERE USL.Uye_ID = %s AND USL.Sezon_Yili = %s", (st.session_state.kullanici_id, datetime.datetime.now().year))
             lig_durumu = cursor.fetchone()
-            if lig_durumu:
-                col1, col2 = st.columns(2)
-                col1.metric("Liginiz", lig_durumu['LigAdi'])
-                col2.metric("Puanınız", lig_durumu['ToplamPuan'])
             
-            query = f"SELECT R.RotaAdi, K.KosuTarihi, K.Mesafe_KM, K.Sure_Dakika, K.KazanilanPuan FROM Kosular K JOIN Rotalar R ON K.Rota_ID = R.Rota_ID WHERE K.Uye_ID = {st.session_state.kullanici_id} ORDER BY K.KosuTarihi DESC"
+            if lig_durumu:
+                m_col1, m_col2 = st.columns(2)
+                with m_col1:
+                    st.metric("Güncel Liginiz", f"🏅 {lig_durumu['LigAdi']}")
+                with m_col2:
+                    st.metric("Toplam Puanınız", f"⭐ {lig_durumu['ToplamPuan']}")
+            
+            st.markdown("<br><h4 style='color: #1E293B; font-weight: 700;'>Son Koşularınız</h4>", unsafe_allow_html=True)
+            query = f"SELECT R.RotaAdi as 'Rota', DATE_FORMAT(K.KosuTarihi, '%d.%m.%Y') as 'Tarih', K.Mesafe_KM as 'Mesafe (KM)', K.Sure_Dakika as 'Süre (Dk)', K.KazanilanPuan as 'Kazanılan Puan' FROM Kosular K JOIN Rotalar R ON K.Rota_ID = R.Rota_ID WHERE K.Uye_ID = {st.session_state.kullanici_id} ORDER BY K.KosuTarihi DESC"
             df_gecmis = pd.read_sql(query, conn)
-            st.dataframe(df_gecmis, use_container_width=True, hide_index=True)
+            
+            if not df_gecmis.empty:
+                st.dataframe(df_gecmis, use_container_width=True, hide_index=True)
+            else:
+                st.info("Henüz kaydedilmiş bir koşunuz bulunmuyor.")
         except Exception as e: pass

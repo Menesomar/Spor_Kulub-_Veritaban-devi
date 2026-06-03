@@ -1,0 +1,15 @@
+[theme]
+# Ana vurgu rengi (Sıcak ahşap / meşe tonu)
+primaryColor = "#C19A6B"
+
+# Arka plan rengi (Saf mermer beyazı)
+backgroundColor = "#FFFFFF"
+
+# İkincil arka plan (Yan menü için çok hafif kırık beyaz/gri)
+secondaryBackgroundColor = "#F4F6F9"
+
+# Metin rengi (Göz yormayan koyu antrasit)
+textColor = "#2C3E50"
+
+# Modern font
+font = "sans serif"
