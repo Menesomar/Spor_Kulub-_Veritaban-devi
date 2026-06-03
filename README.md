@@ -35,3 +35,28 @@ graph TD
     I --> J[Trigger: Puanı Hesapla]
     J --> K[Trigger: Ligi Güncelle]
     K --> F
+```
+
+## 🏗️ 4. Yazılım Mimarisi
+Proje, İstemci-Sunucu (Client-Server) mimarisine benzer bir yapıda, "Veri Katmanı" ve "Sunum Katmanı" olarak iki ana bileşenden oluşmaktadır:
+* **Sunum Katmanı (Frontend):** Python ve Streamlit kullanılarak geliştirilmiştir. Özel CSS enjekte edilerek modern ve aydınlık bir arayüz (UI) tasarlanmıştır.
+* **Veri Katmanı (Backend & Database):** MySQL kullanılmıştır. İş mantığının (Business Logic) büyük bir kısmı arayüzde değil, doğrudan veritabanı katmanında (Trigger, View ve Stored Procedure'ler aracılığıyla) işlenerek sistem performansı artırılmıştır.
+* **Bağlantı:** `mysql-connector-python` kütüphanesi ile arayüz ve veritabanı arası iletişim sağlanmıştır.
+
+## 📊 5. Veritabanı Diyagramı (ER)
+Veritabanımız, 5N (Normalizasyon) kurallarına uygun olarak tasarlanmış olup, toplam 6 adet birbiriyle ilişkili (Primary/Foreign Key) tablodan oluşmaktadır.
+
+*[Buraya MySQL Workbench üzerinden aldığınız EER Diyagramının ekran görüntüsünü sürükleyip bırakın]*
+
+## 🏢 6. Genel Yapı
+Proje; üyelerin kayıt olup sisteme giriş yapabildiği, adminlerin sistem üzerinden duyuru paylaşabildiği ve üyelerin koşularını rotalara göre kaydedebildiği bir ekosistemdir. Sistemde;
+* **Trigger'lar** ile puanlamalar ve küme düşme/çıkma işlemleri otomatik hesaplanır.
+* **View'lar** aracılığıyla Canlı Liderlik Tablosu ve Rota Tercih İstatistikleri anlık olarak çekilir.
+* **Stored Procedure'ler** ile karmaşık koşu ekleme ve ceza puanı kesme işlemleri güvenli bir şekilde yürütülür.
+* **Kısıtlayıcılar (Constraints)** sayesinde hatalı, eksik veya tekrarlayan veri girişi engellenir.
+
+## 📚 7. Referanslar
+1. Kocaeli Üniversitesi TBL331 Ders Notları
+2. [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/) - Trigger ve Procedure yapıları için.
+3. [Streamlit Documentation](https://docs.streamlit.io/) - Arayüz ve modern CSS entegrasyonları için.
+4. [Mermaid.js](https://mermaid.js.org/) - Akış şeması tasarımı için.
