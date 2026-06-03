@@ -49,12 +49,51 @@ Veritabanımız, 5N (Normalizasyon) kurallarına uygun olarak tasarlanmış olup
 
 <img width="1919" height="905" alt="Ekran görüntüsü 2026-06-04 022409" src="https://github.com/user-attachments/assets/b0c6f762-49e5-4056-bb8f-2c937e87bf56" />
 
-## 🏢 6. Genel Yapı
-Proje; üyelerin kayıt olup sisteme giriş yapabildiği, adminlerin sistem üzerinden duyuru paylaşabildiği ve üyelerin koşularını rotalara göre kaydedebildiği bir ekosistemdir. Sistemde;
-* **Trigger'lar** ile puanlamalar ve küme düşme/çıkma işlemleri otomatik hesaplanır.
-* **View'lar** aracılığıyla Canlı Liderlik Tablosu ve Rota Tercih İstatistikleri anlık olarak çekilir.
-* **Stored Procedure'ler** ile karmaşık koşu ekleme ve ceza puanı kesme işlemleri güvenli bir şekilde yürütülür.
-* **Kısıtlayıcılar (Constraints)** sayesinde hatalı, eksik veya tekrarlayan veri girişi engellenir.
+## 🏢 6. Veritabanı Nesneleri ve İş Mantığı Görevleri
+Hocanın proje isterlerinde belirttiği "birden fazla kez ve amaca uygun kullanım" kuralına bağlı olarak veritabanı seviyesinde geliştirilen mimari nesneler aşağıda listelenmiştir:
+
+* **Stored Procedures (Yordamlar):** * `SP_YeniKosuEkle`: Kullanıcının girdiği mesafe ve süre üzerinden anlık Pace kontrolü yapar, imkansız hızlardaki hileli girişleri (`SIGNAL SQLSTATE '45000'`) engelleyerek kararlı veri girişi sağlar.
+  * `SP_CezaPuaniVer`: Admin panelinden tetiklenen disiplin cezalarında üyenin puanını düşürür ve baremlere göre otomatik küme düşürme işlemini yönetir.
+* **Triggers (Tetikleyiciler):**
+  * `TRG_PuanHesapla_Ve_LigGuncelle`: `Kosular` tablosuna yeni veri girilmeden önce (`BEFORE INSERT`) rotanın zorluk katsayısını çekerek puanı hesaplar, üyenin toplam puanına ekler ve anlık olarak lig atlamasını sağlar.
+  * `TRG_Kosu_Silinirse_Puan_Guncelle`: Hileli veya hatalı bir koşu kaydı silindiğinde (`AFTER DELETE`) üyenin toplam puanını geri düşürür ve sistemde otomatik küme düşme algoritmasını tetikler.
+* **Views (Görünümler):**
+  * `VW_CanliLigSiralama`: Üyelerin toplam puanlarını ve koştukları toplam kilometreleri anlık olarak hesaplayarak lig tablosuna yansıtır.
+  * `VW_PopulerRotalar` & `VW_RotaTercihleri`: Rotaların kullanım sıklıklarını ve ortalama tamamlanma sürelerini analiz etmek için kurgulanmıştır.
+* **Indexes (İndeksler):**
+  * `idx_uye_eposta`: Kimlik doğrulama ve giriş işlemlerinde B-Tree aramasını optimize eder.
+  * `idx_kosu_tarihi`: Profil ekranındaki geçmiş antrenman listelemelerini milisaniyeler seviyesine düşürür.
+
+## 💻 7. Geliştirme Ortamı ve Kurulum Talimatları
+Projenin yerel ortamda kararlı bir şekilde çalıştırılması ve test edilebilmesi için aşağıdaki adımların sırasıyla uygulanması gerekmektedir:
+
+### Bağımlılıklar ve Teknolojiler
+* **Yazılım Dili:** Python (v3.10+)
+* **Veritabanı Yönetim Sistemi:** MySQL Server (v8.0+)
+* **Gerekli Python Kütüphaneleri:** `streamlit`, `mysql-connector-python`, `pandas`, `python-dotenv`
+
+### Kurulum Adımları
+```bash
+# 1. Proje reposunu yerel bilgisayarınıza klonlayın
+git clone [https://github.com/Menesomar/Spor_Kulub-_Veritaban-devi.git](https://github.com/Menesomar/Spor_Kulub-_Veritaban-devi.git)
+
+# 2. Proje ana dizinine giriş yapın
+cd KosuKulubu_Projesi
+
+# 3. Gerekli tüm bağımlılıkları tek seferde yükleyin
+pip install streamlit mysql-connector-python pandas python-dotenv
+
+# 4. Proje kök dizininde bir '.env' dosyası oluşturarak yerel MySQL bağlantı bilgilerinizi tanımlayın
+# Örnek içerik:
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASS=yerel_mysql_sifreniz
+# DB_NAME=KosuKulubuDB
+# DB_PORT=3306
+
+# 5. Uygulamayı Streamlit sunucusu üzerinden ayağa kaldırın
+streamlit run app.py
+
 
 ## 📚 7. Referanslar
 1. Kocaeli Üniversitesi TBL331 Ders Notları
